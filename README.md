@@ -2,7 +2,7 @@
 
 CLI Password Manager is a Command Line Interface tool that helps you keep your passwords in your local environment locally without having to worry about cloud saving.
 
-##🗂️ Folder Structure
+## 🗂️ Folder Structure
 
 This workspace contains three folders, where:
 
