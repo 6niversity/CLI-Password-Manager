@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -80,7 +81,10 @@ public class App {
 
         // Scanner class
         Scanner scanner = new Scanner(System.in);
-
+        
+        // ArrayList (first initialised save of every class byte)
+        ArrayList<User> init = new ArrayList<>();
+        
         // HashMap
         HashMap<String, String> accountDictionary = new HashMap<>();
 
@@ -92,12 +96,12 @@ public class App {
             // load every saved element
             try {
                 while (true) { 
-                    Saved acc = (Saved) in.readObject();
-                    accountDictionary.put(acc.getAccount(), acc.getPassword());
+                    User acc = (User) in.readObject();
+                    // initialise inside init (arraylist)
                 }
             } catch (EOFException eofe) {}
 
-        } catch (Exception e) {}
+        } catch (Exception e) {e.printStackTrace();}
 
         // introduce main system
         System.out.println("Welcome to CLI Password Manager\nChoose from the following options\n1. Check Accounts\n2. Add New Accounts\n3. Change local information\n3. Exit");
@@ -132,6 +136,7 @@ public class App {
                 Save(newAccount, newPassword);
             }
             case 3: System.exit(0);
+            default: System.out.println("Please choose between 1-3.");
         }
     }
 
