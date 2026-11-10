@@ -16,7 +16,7 @@ public class App {
 
         // Load data and transfer to hashmap on first load
         try {
-            FileInputStream fileIn = new FileInputStream("res/bytes/raw.txt");
+            FileInputStream fileIn = new FileInputStream("res/bytes/raw.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
 
             User info = (User) in.readObject();
@@ -54,7 +54,7 @@ public class App {
                 // write raw class bytes to file
                 User current = new User(username, password);
 
-                FileOutputStream fileOut = new FileOutputStream("res/bytes/raw.txt");
+                FileOutputStream fileOut = new FileOutputStream("res/bytes/raw.ser");
                 ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
                 out.writeObject(current);
@@ -74,15 +74,19 @@ public class App {
     }
 
     public static void Program() {
+        // clear console
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+
         // Scanner class
         Scanner scanner = new Scanner(System.in);
 
         // HashMap
         HashMap<String, String> accountDictionary = new HashMap<>();
 
-        // Load the local information
+        // load the local information
         try {
-            FileInputStream fileIn = new FileInputStream("res/bytes/infoRaw.txt");
+            FileInputStream fileIn = new FileInputStream("res/bytes/infoRaw.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
 
             // load every saved element
@@ -95,27 +99,56 @@ public class App {
 
         } catch (Exception e) {}
 
-        // Introduce main system
+        // introduce main system
         System.out.println("Welcome to CLI Password Manager\nChoose from the following options\n1. Check Accounts\n2. Add New Accounts\n3. Change local information\n3. Exit");
 
         // user input
-        int input = scanner.nextInt();
+        int input = Integer.valueOf(scanner.nextLine());
 
+        // switch case with user input
         switch (input) {
             case 1: {
+                // if there is no accounts saved then clear terminal and print message
                 if (accountDictionary.size() == 0) {
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
                     System.out.println("Theres nothing here!");
                     Program();
-                }
-                int i = 0;
-                for (String acc : accountDictionary.keySet()) {
-                    System.out.println(i + ". " + acc + ": " + accountDictionary.get(acc));
+                } else {
+                    int i = 0;
+                    for (String acc : accountDictionary.keySet()) {
+                        System.out.println(i + ". " + acc + ": " + accountDictionary.get(acc));
+                    }
                 }
             }
             case 2: {
+                // allow the user to create new information
+                System.out.println("Enter the email/username: ");
+                String newAccount = scanner.nextLine();
 
+                System.out.println("Enter the password: ");
+                String newPassword = scanner.nextLine();
+
+                Save(newAccount, newPassword);
             }
             case 3: System.exit(0);
         }
+    }
+
+    static void Save(String username, String password) {
+        // save raw bytes
+        try {
+            FileOutputStream fileOut = new FileOutputStream("res/bytes/infoRaw.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+
+            User user = new User(username, password);
+            out.writeObject(user);
+
+            out.close();
+            fileOut.close();
+
+            // automatically return to the program once saved
+            Program();
+        } catch (Exception e) {e.printStackTrace();}
     }
 }
