@@ -3,7 +3,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -82,11 +81,8 @@ public class App {
         // Scanner class
         Scanner scanner = new Scanner(System.in);
         
-        // ArrayList (first initialised save of every class byte)
-        ArrayList<User> init = new ArrayList<>();
-        
         // HashMap
-        HashMap<String, String> accountDictionary = new HashMap<>();
+        HashMap<Integer, Object> initHash = new HashMap<>();
 
         // load the local information
         try {
@@ -95,9 +91,12 @@ public class App {
 
             // load every saved element
             try {
+                int i = 1;
                 while (true) { 
                     User acc = (User) in.readObject();
                     // initialise inside init (arraylist)
+                    initHash.put(i, acc);
+                    i++;
                 }
             } catch (EOFException eofe) {}
 
@@ -113,16 +112,24 @@ public class App {
         switch (input) {
             case 1: {
                 // if there is no accounts saved then clear terminal and print message
-                if (accountDictionary.size() == 0) {
+                if (initHash.size() == 0) {
                     System.out.print("\033[H\033[2J");
                     System.out.flush();
                     System.out.println("Theres nothing here!");
                     Program();
                 } else {
-                    int i = 0;
-                    for (String acc : accountDictionary.keySet()) {
-                        System.out.println(i + ". " + acc + ": " + accountDictionary.get(acc));
+                    for (int index : initHash.keySet()) {
+                        User currentUser = (User) initHash.get(index);
+                        System.out.println(index + ". Username/Email: " + currentUser.getUser() + ". Password: " + currentUser.getPassword());
                     }
+                    
+                    System.out.println("Press enter to return to the menu: ");
+
+                    // Allow the user to return
+                    String enter = scanner.nextLine();
+
+                    // Return to the menu
+                    Program();
                 }
             }
             case 2: {
